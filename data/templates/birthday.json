@@ -1,0 +1,99 @@
+{
+  "event_type": "birthday",
+  "default_budget_split": [
+    {
+      "category": "Venue",
+      "percent": 25
+    },
+    {
+      "category": "Food & Cake",
+      "percent": 35
+    },
+    {
+      "category": "Decor",
+      "percent": 15
+    },
+    {
+      "category": "Entertainment",
+      "percent": 12
+    },
+    {
+      "category": "Return Gifts",
+      "percent": 5
+    },
+    {
+      "category": "Contingency",
+      "percent": 8
+    }
+  ],
+  "default_timeline": [
+    {
+      "title": "Set budget and guest list",
+      "weeks_before": 6
+    },
+    {
+      "title": "Book venue",
+      "weeks_before": 5
+    },
+    {
+      "title": "Order cake and plan menu",
+      "weeks_before": 3
+    },
+    {
+      "title": "Send invitations",
+      "weeks_before": 3
+    },
+    {
+      "title": "Book entertainment and buy decor",
+      "weeks_before": 2
+    },
+    {
+      "title": "Confirm final headcount",
+      "weeks_before": 1
+    }
+  ],
+  "default_vendors": [
+    {
+      "category": "Venue",
+      "what_to_ask": [
+        "Is the date free?",
+        "Hourly or flat price?",
+        "Decoration allowed?"
+      ],
+      "est_cost_range": "20-30% of budget"
+    },
+    {
+      "category": "Bakery",
+      "what_to_ask": [
+        "Custom design possible?",
+        "Eggless option?",
+        "Delivery included?"
+      ],
+      "est_cost_range": "5-10% of budget"
+    },
+    {
+      "category": "Caterer",
+      "what_to_ask": [
+        "Per-plate price?",
+        "Kids menu?",
+        "Minimum order?"
+      ],
+      "est_cost_range": "25-35% of budget"
+    },
+    {
+      "category": "Entertainer / DJ",
+      "what_to_ask": [
+        "Duration?",
+        "Games and props included?",
+        "Advance amount?"
+      ],
+      "est_cost_range": "8-12% of budget"
+    }
+  ],
+  "default_ideas": [
+    "Choose one clear theme and build the decor around it",
+    "Add a DIY activity station",
+    "Make a memory board with photos across the years",
+    "Hand out personalised return gifts"
+  ]
+}

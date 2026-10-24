@@ -1,0 +1,99 @@
+{
+  "event_type": "community",
+  "default_budget_split": [
+    {
+      "category": "Venue & Permissions",
+      "percent": 20
+    },
+    {
+      "category": "Food & Refreshments",
+      "percent": 30
+    },
+    {
+      "category": "Stage, Sound & Lighting",
+      "percent": 18
+    },
+    {
+      "category": "Publicity & Printing",
+      "percent": 10
+    },
+    {
+      "category": "Volunteers & Logistics",
+      "percent": 10
+    },
+    {
+      "category": "Contingency",
+      "percent": 12
+    }
+  ],
+  "default_timeline": [
+    {
+      "title": "Form organising committee and set goals",
+      "weeks_before": 10
+    },
+    {
+      "title": "Get permissions and book venue",
+      "weeks_before": 8
+    },
+    {
+      "title": "Start publicity and sponsor outreach",
+      "weeks_before": 6
+    },
+    {
+      "title": "Recruit and brief volunteers",
+      "weeks_before": 4
+    },
+    {
+      "title": "Finalize program schedule and sound setup",
+      "weeks_before": 2
+    },
+    {
+      "title": "Walkthrough of venue and emergency plan",
+      "weeks_before": 1
+    }
+  ],
+  "default_vendors": [
+    {
+      "category": "Venue / Ground",
+      "what_to_ask": [
+        "Capacity limit?",
+        "Power backup?",
+        "Permission paperwork?"
+      ],
+      "est_cost_range": "15-25% of budget"
+    },
+    {
+      "category": "Sound & Lighting",
+      "what_to_ask": [
+        "Setup time?",
+        "Backup equipment?",
+        "Technician on site?"
+      ],
+      "est_cost_range": "15-20% of budget"
+    },
+    {
+      "category": "Caterer",
+      "what_to_ask": [
+        "Bulk pricing?",
+        "Hygiene certificate?",
+        "Serving staff included?"
+      ],
+      "est_cost_range": "25-35% of budget"
+    },
+    {
+      "category": "Printer",
+      "what_to_ask": [
+        "Banner and poster rates?",
+        "Turnaround time?",
+        "Proof before printing?"
+      ],
+      "est_cost_range": "5-10% of budget"
+    }
+  ],
+  "default_ideas": [
+    "Run a social media countdown with volunteer shout-outs",
+    "Add a local-artist showcase",
+    "Set up a feedback booth for the next edition",
+    "Offer eco-friendly serveware and a recycling corner"
+  ]
+}

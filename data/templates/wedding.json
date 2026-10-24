@@ -1,0 +1,120 @@
+{
+  "event_type": "wedding",
+  "default_budget_split": [
+    {
+      "category": "Venue",
+      "percent": 25
+    },
+    {
+      "category": "Catering",
+      "percent": 30
+    },
+    {
+      "category": "Decor & Flowers",
+      "percent": 12
+    },
+    {
+      "category": "Photography & Video",
+      "percent": 8
+    },
+    {
+      "category": "Attire & Jewellery",
+      "percent": 10
+    },
+    {
+      "category": "Music & Entertainment",
+      "percent": 5
+    },
+    {
+      "category": "Invitations & Gifts",
+      "percent": 3
+    },
+    {
+      "category": "Contingency",
+      "percent": 7
+    }
+  ],
+  "default_timeline": [
+    {
+      "title": "Fix budget and guest list",
+      "weeks_before": 24
+    },
+    {
+      "title": "Book venue and date",
+      "weeks_before": 20
+    },
+    {
+      "title": "Book photographer and caterer",
+      "weeks_before": 16
+    },
+    {
+      "title": "Order attire and jewellery",
+      "weeks_before": 12
+    },
+    {
+      "title": "Send invitations",
+      "weeks_before": 8
+    },
+    {
+      "title": "Finalize menu, decor and music",
+      "weeks_before": 4
+    },
+    {
+      "title": "Confirm all vendors and make final payments",
+      "weeks_before": 1
+    }
+  ],
+  "default_vendors": [
+    {
+      "category": "Venue",
+      "what_to_ask": [
+        "Is the date free?",
+        "What is included in the rent?",
+        "Any outside caterer fee?"
+      ],
+      "est_cost_range": "20-30% of budget"
+    },
+    {
+      "category": "Caterer",
+      "what_to_ask": [
+        "Per-plate price?",
+        "Tasting session?",
+        "Staff and live counters included?"
+      ],
+      "est_cost_range": "25-35% of budget"
+    },
+    {
+      "category": "Photographer",
+      "what_to_ask": [
+        "Package hours?",
+        "Delivery time for album?",
+        "Drone and pre-wedding shoot?"
+      ],
+      "est_cost_range": "7-10% of budget"
+    },
+    {
+      "category": "Decorator",
+      "what_to_ask": [
+        "Mood board and 3D mockup?",
+        "Flowers real or artificial?",
+        "Setup and teardown time?"
+      ],
+      "est_cost_range": "10-15% of budget"
+    },
+    {
+      "category": "DJ / Music",
+      "what_to_ask": [
+        "Sound and lighting included?",
+        "Overtime charges?",
+        "Live performers available?"
+      ],
+      "est_cost_range": "4-6% of budget"
+    }
+  ],
+  "default_ideas": [
+    "Pick a signature colour palette and use it across invites, decor and attire",
+    "Add a live regional food counter",
+    "Create a guest photo wall with instant prints",
+    "Plan a short video of the couple's story for the reception"
+  ]
+}
