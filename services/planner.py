@@ -12,6 +12,7 @@ from services.timeline_dates import assign_dates, weeks_available
 ROOT = Path(__file__).resolve().parent.parent
 RETRY_DELAY = 2.0     # seconds; tests set this to 0
 LAST_ERROR = {"msg": ""}   # most recent LLM failure, shown in the UI
+AI_LOG: list[dict] = []    # last prompts and responses, shown in the AI Inspector tab
 DAILY_QUOTA_MSG = ("Daily free-tier quota used up (resets at midnight Pacific time). "
                    "Add more models to GEMINI_MODELS in .env, or try again tomorrow.")
 
@@ -55,7 +56,13 @@ def _ask(provider, prompt_name: str, user_msg: str, schema, system: str | None =
         if error:
             msg += f"\n\nYour previous answer was rejected because: {error}. Fix it."
         try:
-            return provider.generate(system, msg, schema)
+            t0 = time.time()
+            result = provider.generate(system, msg, schema)
+            AI_LOG.append({"step": prompt_name, "model": getattr(provider, "last_model", ""),
+                           "seconds": round(time.time() - t0, 1), "prompt": msg,
+                           "response": result.model_dump_json(indent=2)})
+            del AI_LOG[:-10]                  # keep the last 10 calls
+            return result
         except Exception as e:               # bad JSON, schema fail, API hiccup
             full = str(e)
             error = full[:200]

@@ -107,3 +107,13 @@ def test_daily_quota_is_not_retried():
     assert p.n == 2                                  # one call for budget, one for details, no retries
     assert set(plan.sources.values()) == {"template"}
     assert "quota" in planner.LAST_ERROR["msg"].lower()
+
+
+def test_ai_log_records_prompt_and_response():
+    import services.planner as planner
+    planner.AI_LOG.clear()
+    build_plan(BRIEF, SmartFake())
+    steps = [e["step"] for e in planner.AI_LOG]
+    assert steps == ["budget", "details"]
+    assert "Guests: 50" in planner.AI_LOG[0]["prompt"]
+    assert planner.AI_LOG[0]["response"].startswith("{")
