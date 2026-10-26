@@ -21,11 +21,11 @@ html, body, .stApp, .stMarkdown, [data-testid="stWidgetLabel"], input, textarea,
 [data-testid="stSidebar"] h2 { font-size: 1.35rem; font-weight: 800; }
 
 /* Hero */
-.hero { background: linear-gradient(135deg, #292654 0%, #5145bd 58%, #8174ed 100%); color: #fff;
+.hero { background: linear-gradient(135deg, #292654 0%, #5145bd 58%, #6a5fe0 100%); color: #fff;
   border-radius: 24px; padding: 38px 40px; margin-bottom: 26px; position: relative; overflow: hidden;
   box-shadow: 10px 10px 24px #c5cad5, -8px -8px 22px #ffffff; }
 .hero::after { content: ""; position: absolute; width: 230px; height: 230px; right: -70px; top: -100px;
-  border-radius: 50%; background: rgba(255,255,255,0.08); }
+  border-radius: 50%; background: rgba(255,255,255,0.04); }
 .hero h1 { color: #fff !important; font-size: clamp(1.8rem, 3vw, 2.7rem); font-weight: 800; line-height: 1.2;
   margin: 0 0 14px 0; padding: 0; letter-spacing: -1.2px; }
 .hero p { color: #f3f2ff !important; font-size: 1.04rem; line-height: 1.8; margin: 0; max-width: 850px; }
@@ -52,7 +52,7 @@ html, body, .stApp, .stMarkdown, [data-testid="stWidgetLabel"], input, textarea,
   background: #e9edf5 !important; color: #18233b !important; border: 1px solid #d6dce8 !important;
   border-radius: 12px !important; min-height: 45px;
   box-shadow: inset 3px 3px 6px #d0d5df, inset -3px -3px 6px #ffffff; }
-.stTextInput input::placeholder, .stTextArea textarea::placeholder { color: #657188 !important; opacity: 1 !important; }
+.stTextInput input::placeholder, .stTextArea textarea::placeholder { color: #5a667c !important; opacity: 1 !important; }
 
 /* Buttons */
 .stButton > button, [data-testid="stFormSubmitButton"] > button, .stDownloadButton > button {
@@ -65,7 +65,7 @@ html, body, .stApp, .stMarkdown, [data-testid="stWidgetLabel"], input, textarea,
   box-shadow: inset 3px 3px 6px #c5cad5, inset -3px -3px 6px #ffffff; }
 button[kind="primary"], button[kind="primaryFormSubmit"],
 button[data-testid="stBaseButton-primary"], button[data-testid="stBaseButton-primaryFormSubmit"] {
-  background: linear-gradient(135deg, #5145bd, #7468e8) !important; color: #fff !important; border: none !important;
+  background: linear-gradient(135deg, #5145bd, #6a5fe0) !important; color: #fff !important; border: none !important;
   box-shadow: 5px 5px 12px #c0c3d5, -4px -4px 10px #ffffff; }
 
 /* Tabs (7 of them, so tighter padding) */
@@ -93,4 +93,18 @@ button[data-testid="stBaseButton-primary"], button[data-testid="stBaseButton-pri
   .hero { padding: 26px 22px; border-radius: 18px; }
   .hero h1 { font-size: 1.8rem; }
   .feature-card { margin-bottom: 15px; }
+}
+
+
+/* Accessibility (patch): headings, visible keyboard focus, reduced motion */
+h2.section-heading { padding: 0; }
+h3.feature-title { padding: 0; margin: 0 0 10px; }
+p.feature-description { margin: 0; }
+.stApp h1 { font-size: clamp(1.6rem, 2.6vw, 2.3rem); letter-spacing: -.5px; }
+.stApp .hero h1 { font-size: clamp(1.8rem, 3vw, 2.7rem); letter-spacing: -1.2px; }
+:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible,
+[role="tab"]:focus-visible, [data-baseweb="select"]:focus-within { outline: 3px solid #302c77 !important; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  .feature-card:hover, .stButton > button:hover, [data-testid="stFormSubmitButton"] > button:hover { transform: none !important; }
 }

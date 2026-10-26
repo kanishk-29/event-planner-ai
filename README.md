@@ -94,6 +94,16 @@ data/templates/         Fallback templates per event type
 tests/                  Unit tests
 ```
 
+## Accessibility
+
+- Text and button colours meet WCAG AA contrast (4.5:1 or better): body text 13.3:1, secondary text 5.4:1,
+  placeholders 4.9:1, white text on primary buttons 4.8:1 or better. Ratios were calculated, not guessed.
+- Visible keyboard focus outline on every control, and all controls are at least 44 px tall.
+- Semantic headings (one `h1`, `h2` sections, `h3` cards); decorative emoji are hidden from screen readers.
+- Respects the "reduce motion" setting.
+- The budget chart has a text alternative (the table plus a caption).
+- Not yet tested with a screen reader.
+
 ## Limitations (honest notes)
 
 - Vendor cost ranges are **AI estimates, not quotes**. The tool suggests categories and

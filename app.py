@@ -130,22 +130,22 @@ if go:
 # ---------------- Landing page (no plan yet) ----------------
 if not ss.plan:
     st.markdown(
-        '<div class="hero"><div class="hero-label">PLAN SMARTER · CELEBRATE BETTER</div>'
-        '<h1>🎉 AI Event Planning Assistant</h1>'
+        '<section class="hero" aria-labelledby="app-title"><div class="hero-label">PLAN SMARTER · CELEBRATE BETTER</div>'
+        '<h1 id="app-title"><span aria-hidden="true">🎉</span> AI Event Planning Assistant</h1>'
         '<p>From the first idea to the final celebration, plan your event with confidence. '
-        'Create a personalised budget, organised timeline, vendor checklist and creative ideas with AI.</p></div>',
+        'Create a personalised budget, organised timeline, vendor checklist and creative ideas with AI.</p></section>',
         unsafe_allow_html=True)
-    st.markdown('<div class="section-heading">Everything you need to plan</div>'
+    st.markdown('<h2 class="section-heading">Everything you need to plan</h2>'
                 '<div class="section-description">One workspace. Every detail. A celebration that feels like yours.</div>',
                 unsafe_allow_html=True)
     cards = [("💰", "Smart Budget", "AI suggests the split, code computes exact rupees, so it always adds up."),
              ("🗓️", "Dated Timeline", "Your event date becomes an actionable schedule with real deadlines."),
              ("🤝", "Vendor Checklist", "Venue, catering, decor and entertainment, with questions to ask each vendor.")]
     for col, (icon, title, text) in zip(st.columns(3, gap="large"), cards):
-        col.markdown(f'<div class="feature-card"><div class="feature-icon">{icon}</div>'
-                     f'<div class="feature-title">{title}</div>'
-                     f'<div class="feature-description">{text}</div></div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-heading">Need some inspiration?</div>'
+        col.markdown(f'<article class="feature-card"><div class="feature-icon" aria-hidden="true">{icon}</div>'
+                     f'<h3 class="feature-title">{title}</h3>'
+                     f'<p class="feature-description">{text}</p></article>', unsafe_allow_html=True)
+    st.markdown('<h2 class="section-heading">Need some inspiration?</h2>'
                 '<div class="section-description">Pre-fill the form with an example, then press '
                 '<b>Generate my event plan</b>. Examples never call the AI by themselves.</div>',
                 unsafe_allow_html=True)
@@ -176,7 +176,7 @@ if prompt:
 
 plan = ss.plan
 b = plan.brief
-st.subheader(f"{EMOJI.get(b.event_type, '🎉')} {b.event_type.title()} · {b.city.title()} · {b.event_date:%d %b %Y}")
+st.title(f"{EMOJI.get(b.event_type, '🎉')} {b.event_type.title()} · {b.city.title()} · {b.event_date:%d %b %Y}")
 
 fallbacks = [k for k, v in plan.sources.items() if v == "template"]
 if fallbacks:
@@ -233,6 +233,7 @@ with tab_budget:
                        for i in plan.budget])
     st.dataframe(df, use_container_width=True, hide_index=True)
     st.bar_chart(df.set_index("Category")["Amount (₹)"])
+    st.caption("Bar chart of the rupee amount for each budget category. The table above lists the same values.")
     st.caption(f"Total allocated: ₹{sum(i.amount for i in plan.budget):,}")
 
 # ---------------- Timeline ----------------
