@@ -1,9 +1,13 @@
 [theme]
-primaryColor = "#B3261E"
+base = "light"                       # the neumorphic design is light-only
+primaryColor = "#635bdb"
+backgroundColor = "#e9edf5"
+secondaryBackgroundColor = "#dfe4ef"
+textColor = "#18233b"
 font = "sans serif"
 
 [client]
-toolbarMode = "minimal"      # hides the Deploy button and developer menu
+toolbarMode = "minimal"              # hides the Deploy button and developer menu
 
 [browser]
 gatherUsageStats = false

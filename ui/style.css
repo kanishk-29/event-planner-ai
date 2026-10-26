@@ -1,0 +1,96 @@
+/* Neumorphic theme. Pair with .streamlit/config.toml (forces the light base theme). */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --background: #e9edf5; --surface: #e9edf5; --text: #18233b; --muted: #526078;
+  --accent: #635bdb; --accent-dark: #4d45bd;
+  --shadow-dark: #c5cad5; --shadow-light: #ffffff; --border: #d5dbe7;
+}
+
+/* Font: set on containers only. Never on [class*="css"], that breaks Streamlit's icon font. */
+html, body, .stApp, .stMarkdown, [data-testid="stWidgetLabel"], input, textarea, .stButton button {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+}
+.stApp { background: var(--background); }
+.block-container { max-width: 1500px; padding-top: 2rem; padding-bottom: 3rem; }
+
+/* Sidebar */
+[data-testid="stSidebar"] { background: var(--surface); border-right: 1px solid var(--border); }
+[data-testid="stSidebar"] > div:first-child { padding: 1.5rem 1.1rem; }
+[data-testid="stSidebar"] h2 { font-size: 1.35rem; font-weight: 800; }
+
+/* Hero */
+.hero { background: linear-gradient(135deg, #292654 0%, #5145bd 58%, #8174ed 100%); color: #fff;
+  border-radius: 24px; padding: 38px 40px; margin-bottom: 26px; position: relative; overflow: hidden;
+  box-shadow: 10px 10px 24px #c5cad5, -8px -8px 22px #ffffff; }
+.hero::after { content: ""; position: absolute; width: 230px; height: 230px; right: -70px; top: -100px;
+  border-radius: 50%; background: rgba(255,255,255,0.08); }
+.hero h1 { color: #fff !important; font-size: clamp(1.8rem, 3vw, 2.7rem); font-weight: 800; line-height: 1.2;
+  margin: 0 0 14px 0; padding: 0; letter-spacing: -1.2px; }
+.hero p { color: #f3f2ff !important; font-size: 1.04rem; line-height: 1.8; margin: 0; max-width: 850px; }
+.hero-label { color: #fff; font-size: .78rem; text-transform: uppercase; letter-spacing: 2px;
+  font-weight: 700; margin-bottom: 13px; }
+
+.section-heading { font-size: 1.45rem; font-weight: 800; margin: 30px 0 16px; letter-spacing: -.5px; }
+.section-description { color: var(--muted); font-size: .96rem; line-height: 1.7; margin-top: -8px; margin-bottom: 20px; }
+
+/* Feature cards */
+.feature-card { background: var(--surface); border-radius: 19px; padding: 24px 22px; min-height: 180px; height: 100%;
+  box-shadow: 7px 7px 16px var(--shadow-dark), -7px -7px 16px var(--shadow-light);
+  border: 1px solid rgba(255,255,255,.5); transition: transform .2s ease, box-shadow .2s ease; }
+.feature-card:hover { transform: translateY(-3px);
+  box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light); }
+.feature-icon { font-size: 1.8rem; margin-bottom: 15px; }
+.feature-title { font-size: 1.08rem; font-weight: 800; margin-bottom: 10px; }
+.feature-description { color: var(--muted); font-size: .92rem; line-height: 1.75; }
+
+/* Labels and inputs */
+[data-testid="stWidgetLabel"] p { color: var(--text) !important; font-weight: 700 !important; font-size: .93rem !important; }
+.stTextInput input, .stNumberInput input, .stDateInput input, .stTextArea textarea,
+.stSelectbox div[data-baseweb="select"] > div {
+  background: #e9edf5 !important; color: #18233b !important; border: 1px solid #d6dce8 !important;
+  border-radius: 12px !important; min-height: 45px;
+  box-shadow: inset 3px 3px 6px #d0d5df, inset -3px -3px 6px #ffffff; }
+.stTextInput input::placeholder, .stTextArea textarea::placeholder { color: #657188 !important; opacity: 1 !important; }
+
+/* Buttons */
+.stButton > button, [data-testid="stFormSubmitButton"] > button, .stDownloadButton > button {
+  background: #e9edf5; color: #302c77 !important; border: 1px solid #d8ddeb; border-radius: 13px;
+  padding: .65rem 1rem; font-weight: 700; min-height: 44px;
+  box-shadow: 5px 5px 10px #c5cad5, -5px -5px 10px #ffffff; transition: all .2s ease; }
+.stButton > button:hover, [data-testid="stFormSubmitButton"] > button:hover, .stDownloadButton > button:hover {
+  color: #5145bd !important; border-color: #8174ed; transform: translateY(-1px); }
+.stButton > button:active, [data-testid="stFormSubmitButton"] > button:active {
+  box-shadow: inset 3px 3px 6px #c5cad5, inset -3px -3px 6px #ffffff; }
+button[kind="primary"], button[kind="primaryFormSubmit"],
+button[data-testid="stBaseButton-primary"], button[data-testid="stBaseButton-primaryFormSubmit"] {
+  background: linear-gradient(135deg, #5145bd, #7468e8) !important; color: #fff !important; border: none !important;
+  box-shadow: 5px 5px 12px #c0c3d5, -4px -4px 10px #ffffff; }
+
+/* Tabs (7 of them, so tighter padding) */
+.stTabs [data-baseweb="tab-list"] { gap: 6px; background: #e9edf5; padding: 8px; border-radius: 16px;
+  box-shadow: inset 4px 4px 8px #d0d5df, inset -4px -4px 8px #ffffff; }
+.stTabs [data-baseweb="tab"] { border-radius: 10px; color: #35415a; font-weight: 700; padding: 10px 14px; background: transparent; }
+.stTabs [aria-selected="true"] { background: #fff !important; color: #5145bd !important;
+  box-shadow: 3px 3px 8px #d0d5df, -3px -3px 8px #ffffff; }
+
+/* Metrics, alerts, tables, expanders, chat */
+[data-testid="stMetric"] { background: #e9edf5; border-radius: 16px; padding: 18px;
+  box-shadow: 5px 5px 12px #c5cad5, -5px -5px 12px #ffffff; }
+[data-testid="stMetricLabel"] { color: #526078 !important; font-weight: 600 !important; }
+[data-testid="stMetricValue"] { color: #302c77 !important; font-weight: 800 !important; }
+[data-testid="stAlert"] { border-radius: 14px; }
+[data-testid="stDataFrame"] { border-radius: 14px; overflow: hidden; border: 1px solid #d5dbe7; }
+[data-testid="stExpander"] { border-radius: 14px; border: 1px solid #d5dbe7; background: #eef1f8; }
+[data-testid="stChatInput"] { border-radius: 16px; }
+.stProgress > div > div > div > div { background: #635bdb; }
+
+.footer { text-align: center; color: #526078; font-size: .85rem; padding: 30px 0 10px; }
+
+@media (max-width: 768px) {
+  .block-container { padding: 1rem; }
+  .hero { padding: 26px 22px; border-radius: 18px; }
+  .hero h1 { font-size: 1.8rem; }
+  .feature-card { margin-bottom: 15px; }
+}

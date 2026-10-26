@@ -10,6 +10,7 @@ class EventBrief(BaseModel):
     guests: int = Field(gt=0)
     budget: int = Field(gt=0)            # INR
     city: str
+    venue: str = ""                      # optional venue preference
     vibe: str = ""
     traditions: list[str] = []
 

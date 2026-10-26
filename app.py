@@ -1,51 +1,55 @@
 """Streamlit UI. Run: streamlit run app.py"""
+import re
 from datetime import date, timedelta
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
 from core.models import EventBrief, Plan
-from llm import get_provider
 from export.pdf import build_pdf
+from llm import get_provider
 from services.planner import AI_LOG, LAST_ERROR, build_plan
 from services.refiner import refine
 from services.timeline_dates import weeks_available
 from services.validators import check_plan
 from storage import db
 
-st.set_page_config(page_title="AI Event Planner", page_icon="🎉", layout="wide")
+st.set_page_config(page_title="AI Event Planner", page_icon="🎉", layout="wide",
+                   initial_sidebar_state="expanded")
 db.init_db()
 ss = st.session_state
 for key, default in [("plan", None), ("plan_id", None), ("chat", []), ("undo", []), ("nonce", 0)]:
     ss.setdefault(key, default)
 
-EMOJI = {"wedding": "💍", "birthday": "🎂", "community": "🪔"}
+# ---------------- Theme ----------------
+_css = (Path(__file__).parent / "ui" / "style.css").read_text(encoding="utf-8")
+st.markdown(f"<style>{_css}</style>", unsafe_allow_html=True)
 
-st.markdown("""
-<style>
-.block-container {padding-top: 2rem; max-width: 1200px;}
-.hero {padding: 2.2rem 2rem; border-radius: 18px; margin-bottom: 1.2rem;
-       background: linear-gradient(135deg, #B3261E 0%, #E8590C 55%, #F5A623 100%);}
-.hero h1 {color: #fff; margin: 0 0 .5rem 0; font-size: 2.3rem; padding: 0;}
-.hero p {color: #fff; opacity: .95; font-size: 1.05rem; margin: 0;}
-div[data-testid="stMetric"] {background: rgba(128,128,128,.10); border-radius: 12px; padding: .8rem 1rem;}
-</style>
-""", unsafe_allow_html=True)
+EVENT_TYPES = ["wedding", "birthday", "engagement", "anniversary",
+               "corporate event", "college fest", "community event", "other"]
+EMOJI = {"wedding": "💍", "birthday": "🎂", "engagement": "💎", "anniversary": "🥂",
+         "corporate event": "🏢", "college fest": "🎓", "community event": "🪔", "other": "🎉"}
+VENUES = ["Not decided", "Indoor", "Outdoor", "Hotel or banquet hall", "Garden or farmhouse",
+          "Home", "Convention centre"]
 
-# Form defaults live in session_state so the example buttons can pre-fill the form.
+# Form values live in session_state so the example cards can pre-fill the form.
 FORM_DEFAULTS = {"f_type": "wedding", "f_date": date.today() + timedelta(weeks=12), "f_guests": 100,
-                 "f_budget": 500_000, "f_city": "", "f_vibe": "", "f_notes": ""}
+                 "f_budget": 500_000, "f_city": "", "f_venue": "Not decided", "f_vibe": "", "f_notes": ""}
 for _k, _v in FORM_DEFAULTS.items():
     ss.setdefault(_k, _v)
 
-EXAMPLES = {
-    "💍 Royal wedding, Lucknow": dict(f_type="wedding", f_guests=150, f_budget=1_200_000, f_city="Lucknow",
-                                      f_vibe="royal", f_notes="mehendi, sangeet"),
-    "🎂 Kid's birthday, Kanpur": dict(f_type="birthday", f_guests=40, f_budget=100_000, f_city="Kanpur",
-                                      f_vibe="balloons, flowers, kids theme", f_notes="8th birthday, magic show"),
-    "🪔 Diwali meetup, Bengaluru": dict(f_type="community", f_guests=300, f_budget=500_000, f_city="Bengaluru",
-                                        f_vibe="traditional lamps, white theme", f_notes="Diwali celebration"),
-}
+EXAMPLES = [
+    ("💍 Royal Wedding", "Lucknow · 300 guests · Elegant and traditional", "Pre-fill wedding",
+     dict(f_type="wedding", f_guests=300, f_budget=1_500_000, f_city="Lucknow",
+          f_vibe="royal, elegant, traditional", f_notes="mehendi, sangeet")),
+    ("🎂 Kids' Birthday", "Kanpur · 50 guests · Colourful and playful", "Pre-fill birthday",
+     dict(f_type="birthday", f_guests=50, f_budget=100_000, f_city="Kanpur",
+          f_vibe="colourful, playful, cartoon theme", f_notes="8th birthday, magic show")),
+    ("🪔 Diwali Meetup", "Bengaluru · 100 guests · Festive and warm", "Pre-fill meetup",
+     dict(f_type="community event", f_guests=100, f_budget=200_000, f_city="Bengaluru",
+          f_vibe="festive, warm, traditional", f_notes="Diwali celebration")),
+]
 
 
 def fill_example(values: dict):
@@ -62,24 +66,34 @@ def set_plan(plan: Plan, plan_id: int | None = None):
     ss.nonce += 1
 
 
+def footer():
+    st.markdown('<div class="footer">Made for memorable moments ✨<br>'
+                'AI Event Planning Assistant · Plan thoughtfully. Celebrate fully.</div>',
+                unsafe_allow_html=True)
+
+
 # ---------------- Sidebar: intake form + saved plans ----------------
 with st.sidebar:
-    st.header("Event details")
+    st.markdown("## ✨ Event Studio")
+    st.caption("Your event starts with a plan.")
+    st.divider()
+    st.markdown("### 📋 Event details")
     with st.form("intake"):
-        event_type = st.selectbox("Event type", ["wedding", "birthday", "community"], key="f_type",
-                                  format_func=lambda x: f"{EMOJI[x]} {x.title()}")
+        event_type = st.selectbox("Event type", EVENT_TYPES, key="f_type",
+                                  format_func=lambda x: f"{EMOJI[x]} {x.capitalize()}")
         event_date = st.date_input("Event date", min_value=date.today(), key="f_date")
-        guests = st.number_input("Guests", min_value=1, max_value=5000, key="f_guests")
-        budget = st.number_input("Total budget (₹)", min_value=10000, max_value=100_000_000,
-                                 step=10_000, key="f_budget")
+        guests = st.number_input("Number of guests", min_value=1, max_value=5000, step=10, key="f_guests")
+        budget = st.number_input("Total budget (₹)", min_value=10_000, max_value=100_000_000,
+                                 step=5_000, key="f_budget")
         city = st.text_input("City", placeholder="e.g. Lucknow", key="f_city")
-        vibe = st.text_input("Vibe / theme", placeholder="royal, minimalist, eco-friendly...", key="f_vibe")
-        traditions = st.text_input("Functions / special notes",
-                                   placeholder="mehendi, sangeet, 8th birthday (comma separated)", key="f_notes")
-        go = st.form_submit_button("✨ Generate plan", type="primary", use_container_width=True)
+        venue = st.selectbox("Venue preference", VENUES, key="f_venue")
+        vibe = st.text_input("Vibe / theme", placeholder="Royal, minimalist, eco-friendly...", key="f_vibe")
+        notes = st.text_area("Functions / special notes", height=100, key="f_notes",
+                             placeholder="Mehendi, sangeet, live music, dietary needs...")
+        go = st.form_submit_button("✨ Generate my event plan", type="primary", use_container_width=True)
 
     st.divider()
-    st.header("Saved plans")
+    st.markdown("### 💾 Saved plans")
     saved = db.list_plans()
     if saved:
         labels = {f"{name} ({upd[:10]})": pid for pid, name, upd in saved}
@@ -96,12 +110,16 @@ with st.sidebar:
     else:
         st.caption("Nothing saved yet.")
 
+    st.divider()
+    st.markdown("### 💡 Planning tip")
+    st.info("Set aside 5-10% of your budget for unexpected expenses.")
+
 if go:
     try:
         brief = EventBrief(
             event_type=event_type, event_date=event_date, guests=int(guests), budget=int(budget),
-            city=city.strip() or "India", vibe=vibe.strip(),
-            traditions=[t.strip() for t in traditions.split(",") if t.strip()],
+            city=city.strip() or "India", venue="" if venue == "Not decided" else venue,
+            vibe=vibe.strip(), traditions=[t.strip() for t in re.split(r"[,\n]", notes) if t.strip()],
         )
         provider = get_provider()
         with st.spinner("Gemini is planning your event (usually 15-40 seconds)..."):
@@ -109,27 +127,34 @@ if go:
     except Exception as e:
         st.error(f"Could not generate the plan: {e}")
 
+# ---------------- Landing page (no plan yet) ----------------
 if not ss.plan:
     st.markdown(
-        '<div class="hero"><h1>🎉 AI Event Planning Assistant</h1>'
-        '<p>Tell us about your wedding, birthday or community event. Gemini builds your budget, '
-        'timeline, vendor checklist and ideas, and you refine it just by chatting.</p></div>',
+        '<div class="hero"><div class="hero-label">PLAN SMARTER · CELEBRATE BETTER</div>'
+        '<h1>🎉 AI Event Planning Assistant</h1>'
+        '<p>From the first idea to the final celebration, plan your event with confidence. '
+        'Create a personalised budget, organised timeline, vendor checklist and creative ideas with AI.</p></div>',
         unsafe_allow_html=True)
-    cards = [("💰 Smart budget", "AI suggests the split, code computes exact rupees. It always adds up."),
-             ("📅 Dated timeline", "Tasks worked backwards from your event date."),
-             ("🧾 Vendor checklist", "What to ask each vendor, with cost ranges that fit your budget.")]
-    for col, (title, text) in zip(st.columns(3), cards):
+    st.markdown('<div class="section-heading">Everything you need to plan</div>'
+                '<div class="section-description">One workspace. Every detail. A celebration that feels like yours.</div>',
+                unsafe_allow_html=True)
+    cards = [("💰", "Smart Budget", "AI suggests the split, code computes exact rupees, so it always adds up."),
+             ("🗓️", "Dated Timeline", "Your event date becomes an actionable schedule with real deadlines."),
+             ("🤝", "Vendor Checklist", "Venue, catering, decor and entertainment, with questions to ask each vendor.")]
+    for col, (icon, title, text) in zip(st.columns(3, gap="large"), cards):
+        col.markdown(f'<div class="feature-card"><div class="feature-icon">{icon}</div>'
+                     f'<div class="feature-title">{title}</div>'
+                     f'<div class="feature-description">{text}</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-heading">Need some inspiration?</div>'
+                '<div class="section-description">Pre-fill the form with an example, then press '
+                '<b>Generate my event plan</b>. Examples never call the AI by themselves.</div>',
+                unsafe_allow_html=True)
+    for col, (title, caption, label, vals) in zip(st.columns(3, gap="large"), EXAMPLES):
         with col:
-            with st.container(border=True):
-                st.markdown(f"**{title}**")
-                st.caption(text)
-    st.markdown("#### How it works")
-    st.markdown("1. **Fill in the form** on the left\n2. **Generate** and explore the tabs\n"
-                "3. **Chat** to edit it: *make it cheaper*, *add a magic show*, *increase guests to 200*")
-    st.markdown("#### Or start from an example")
-    for col, (label, vals) in zip(st.columns(len(EXAMPLES)), EXAMPLES.items()):
-        col.button(label, on_click=fill_example, args=(vals,), use_container_width=True)
-    st.caption("Examples only fill the form. Press **Generate plan** to call the AI.")
+            st.markdown(f"### {title}")
+            st.caption(caption)
+            st.button(label, key=f"ex_{label}", on_click=fill_example, args=(vals,), use_container_width=True)
+    footer()
     st.stop()
 
 # ---------------- Chat input: edits the plan (pinned to page bottom) ----------------
@@ -253,3 +278,5 @@ with tab_ai:
             st.code(entry["prompt"], language="text")
             st.markdown("**AI response (JSON):**")
             st.code(entry["response"], language="json")
+
+footer()

@@ -17,8 +17,14 @@ DAILY_QUOTA_MSG = ("Daily free-tier quota used up (resets at midnight Pacific ti
                    "Add more models to GEMINI_MODELS in .env, or try again tomorrow.")
 
 
+# The UI offers more event types than we have fallback templates for.
+TEMPLATE_FOR = {"wedding": "wedding", "engagement": "wedding",
+                "birthday": "birthday", "anniversary": "birthday"}
+
+
 def load_template(event_type: str) -> dict:
-    path = ROOT / "data" / "templates" / f"{event_type}.json"
+    key = TEMPLATE_FOR.get(event_type.strip().lower(), "community")   # everything else -> community
+    path = ROOT / "data" / "templates" / f"{key}.json"
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -32,6 +38,7 @@ def _brief_text(brief: EventBrief) -> str:
         f"Guests: {brief.guests}\n"
         f"Total budget: INR {brief.budget}\n"
         f"City: {brief.city}\n"
+        f"Venue preference: {brief.venue or 'not decided'}\n"
         f"Vibe: {brief.vibe or 'not specified'}\n"
         f"Traditions/functions: {', '.join(brief.traditions) or 'none'}\n"
         f"Weeks available until the event: {weeks_available(brief.event_date)}"

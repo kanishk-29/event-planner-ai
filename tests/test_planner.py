@@ -117,3 +117,13 @@ def test_ai_log_records_prompt_and_response():
     assert steps == ["budget", "details"]
     assert "Guests: 50" in planner.AI_LOG[0]["prompt"]
     assert planner.AI_LOG[0]["response"].startswith("{")
+
+
+def test_every_ui_event_type_has_a_fallback():
+    for etype in ["wedding", "birthday", "engagement", "anniversary",
+                  "corporate event", "college fest", "community event", "other"]:
+        brief = EventBrief(event_type=etype, event_date=date(2030, 1, 1), guests=80,
+                           budget=300000, city="Pune", venue="Outdoor")
+        plan = build_plan(brief, Broken())
+        assert sum(i.amount for i in plan.budget) == 300000
+        assert plan.sources["budget"] == "template"
